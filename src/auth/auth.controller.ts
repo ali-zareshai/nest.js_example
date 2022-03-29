@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDate } from './dto';
+import { LoginDate, User } from './dto';
 
 @Controller('auth')
 export class AuthController {
@@ -9,5 +9,10 @@ export class AuthController {
     @Post("login")
     loginUser(@Body() loginData:LoginDate){
         return loginData;
+    }
+
+    @Post('user')
+    addUser(@Body() reqUser:User){
+        return this.authService.addUser(reqUser);
     }
 }
