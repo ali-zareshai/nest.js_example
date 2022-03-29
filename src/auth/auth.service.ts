@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from './dto';
+import { LoginDate, User } from './dto';
 import * as argon from "argon2";
 
 @Injectable()
@@ -16,6 +16,26 @@ export class AuthService {
                 'pass':hashPassword
             },
         });
+        delete createdUser.pass;
         return createdUser;
+    }
+
+    async loginUser(loginData:LoginDate){
+        const user =await this.prisma.user.findUnique({
+            where:{
+                email:loginData.email
+            }
+        });
+        if(!user){
+            throw new ForbiddenException("user or pass is wrong");
+        }
+
+        const status =await argon.verify(user.pass,loginData.password);
+        if(!status){
+            throw new ForbiddenException("user or pass is wrong");
+        }
+
+        delete user.pass;
+        return user;
     }
 }

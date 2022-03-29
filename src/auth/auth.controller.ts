@@ -8,7 +8,7 @@ export class AuthController {
 
     @Post("login")
     loginUser(@Body() loginData:LoginDate){
-        return loginData;
+        return this.authService.loginUser(loginData);
     }
 
     @Post('user')
